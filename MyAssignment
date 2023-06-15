@@ -1,0 +1,114 @@
+#Voting App
+
+[root@ip-172-31-10-249 ~]# git clone https://github.com/ashishrpandey/example-voting-app
+fatal: destination path 'example-voting-app' already exists and is not an empty directory.
+[root@ip-172-31-10-249 ~]# cd  /root/example-voting-app/k8s-specifications
+[root@ip-172-31-10-249 k8s-specifications]# ls -ltr
+total 36
+-rw-r--r-- 1 root root 292 Jun 12 07:18 worker-deployment.yaml
+-rw-r--r-- 1 root root 192 Jun 12 07:18 vote-service.yaml
+-rw-r--r-- 1 root root 289 Jun 12 07:18 vote-deployment.yaml
+-rw-r--r-- 1 root root 195 Jun 12 07:18 result-service.yaml
+-rw-r--r-- 1 root root 299 Jun 12 07:18 result-deployment.yaml
+-rw-r--r-- 1 root root 152 Jun 12 07:18 redis-service.yaml
+-rw-r--r-- 1 root root 402 Jun 12 07:18 redis-deployment.yaml
+-rw-r--r-- 1 root root 146 Jun 12 07:18 db-service.yaml
+-rw-r--r-- 1 root root 401 Jun 12 07:18 db-deployment.yaml
+
+Create vote,worker,dB pods :
+
+[root@ip-172-31-10-249 k8s-specifications]# kubectl apply -f .
+deployment.apps/db created
+service/db created
+deployment.apps/redis created
+service/redis created
+deployment.apps/result created
+deployment.apps/vote created
+deployment.apps/worker created
+
+Check if result,worker and dB created are present
+
+[root@ip-172-31-10-249 k8s-specifications]# kubectl apply -f .
+deployment.apps/db unchanged
+service/db unchanged
+deployment.apps/redis unchanged
+service/redis unchanged
+deployment.apps/result unchanged
+service/result created
+deployment.apps/vote unchanged
+service/vote unchanged
+deployment.apps/worker unchanged
+
+
+Get the list of pods currently running in the machine with the below command :
+
+root@ip-172-31-10-249 k8s-specifications]#kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-l9vqz        1/1     Running   0          34m
+kubia-manual              1/1     Running   0          6d11h
+kubia-manual3             1/1     Running   0          6d10h
+mabullitest2              1/1     Running   0          7d6h
+mongodb                   0/1     Pending   0          3d3h
+nginx-mabu                1/1     Running   0          7d8h
+nginx-uday                1/1     Running   0          7d8h
+nginx-uday1               1/1     Running   0          7d7h
+redis-868d64d78-r8r9r     1/1     Running   0          34m
+result-5d57b59f4b-2cjmq   1/1     Running   0          34m
+vote-94849dc97-trgnz      1/1     Running   0          34m
+worker-dd46d7584-qxm72    1/1     Running   0          34m
+
+Delete voting pod with the below command :
+
+[root@ip-172-31-10-249 k8s-specifications]# kubectl delete po vote-94849dc97-trgnz
+pod "vote-94849dc97-trgnz" deleted
+
+Result : voting works fine even after deleting voting pod
+
+Now Get the list of pods currently running in the machine with the below command :
+
+[root@ip-172-31-10-249 k8s-specifications]# kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-l9vqz        1/1     Running   0          38m
+kubia-manual              1/1     Running   0          6d11h
+kubia-manual3             1/1     Running   0          6d10h
+mabullitest2              1/1     Running   0          7d6h
+mongodb                   0/1     Pending   0          3d3h
+nginx-mabu                1/1     Running   0          7d8h
+nginx-uday                1/1     Running   0          7d8h
+nginx-uday1               1/1     Running   0          7d8h
+redis-868d64d78-r8r9r     1/1     Running   0          38m
+result-5d57b59f4b-2cjmq   1/1     Running   0          38m
+vote-94849dc97-hljx7      1/1     Running   0          41s
+worker-dd46d7584-qxm72    1/1     Running   0          38m
+
+Delete worker pod with the below command :
+
+[root@ip-172-31-10-249 k8s-specifications]# kubectl delete po worker-dd46d7584-qxm72
+pod "worker-dd46d7584-qxm72" deleted
+
+Result : voting works fine even after deleting worker pod
+
+
+Get the list of pods currently running in the machine with the below command :
+[root@ip-172-31-10-249 k8s-specifications]# kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-l9vqz        1/1     Running   0          44m
+kubia-manual              1/1     Running   0          6d11h
+kubia-manual3             1/1     Running   0          6d11h
+mabullitest2              1/1     Running   0          7d6h
+mongodb                   0/1     Pending   0          3d3h
+nginx-mabu                1/1     Running   0          7d8h
+nginx-uday                1/1     Running   0          7d8h
+nginx-uday1               1/1     Running   0          7d8h
+redis-868d64d78-r8r9r     1/1     Running   0          44m
+result-5d57b59f4b-2cjmq   1/1     Running   0          44m
+vote-94849dc97-hljx7      1/1     Running   0          6m42s
+worker-dd46d7584-kkv5f    1/1     Running   0          8s
+
+
+Delete dB pod with the below command :
+
+[root@ip-172-31-10-249 k8s-specifications]# kubectl delete po db-b54cd94f4-l9vqz
+pod "db-b54cd94f4-l9vqz" deleted
+
+Result : voting works fine even after deleting dB pod
